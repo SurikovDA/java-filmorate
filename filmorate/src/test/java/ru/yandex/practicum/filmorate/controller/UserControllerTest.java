@@ -14,18 +14,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserControllerTest {
     UserController controller;
-    User user = new User(1, "yandex@mail.ru", "tests", "test1"
-            , LocalDate.of(1995, 12, 25));
-    User gran = new User(0, "yandex@mail.ru", "tests", ""
-            , LocalDate.of(2023, 3, 25));
-    User emailError = new User(0, "", "tests", "test1"
-            , LocalDate.of(1995, 12, 25));
-    User loginNull = new User(0, "yandex@mail.ru", " ", "test1"
-            , LocalDate.of(1995, 12, 25));
-    User nameNull = new User(0, "yandex@mail.ru", "tests", ""
-            , LocalDate.of(1995, 12, 25));
-    User futureBirthday = new User(0, "yandex@mail.ru", "tests", "test1"
-            , LocalDate.of(2223, 4, 25));
+    User user = new User(1, "yandex@mail.ru", "tests", "test1",
+            LocalDate.of(1995, 12, 25));
+    User gran = new User(0, "yandex@mail.ru", "tests", "",
+            LocalDate.of(2023, 3, 25));
+    User emailError = new User(0, "", "tests", "test1",
+            LocalDate.of(1995, 12, 25));
+    User loginNull = new User(0, "yandex@mail.ru", " ", "test1",
+            LocalDate.of(1995, 12, 25));
+    User nameNull = new User(0, "yandex@mail.ru", "tests", "",
+            LocalDate.of(1995, 12, 25));
+    User futureBirthday = new User(0, "yandex@mail.ru", "tests", "test1",
+            LocalDate.of(2223, 4, 25));
 
     @BeforeEach
     void createUserController() {
@@ -64,8 +64,8 @@ class UserControllerTest {
                         controller.create(loginNull);
                     }
                 });
-        assertEquals("Пользователь не создан!", exception.getMessage()
-                , "Не должен обрабатывать пустой логин");
+        assertEquals("Пользователь не создан!", exception.getMessage(),
+                "Не должен обрабатывать пустой логин");
     }
 
     @Test
@@ -78,8 +78,8 @@ class UserControllerTest {
                         controller.create(futureBirthday);
                     }
                 });
-        assertEquals("Пользователь не создан!", exception.getMessage()
-                , "Не должен обрабатывать дни рождения позже сегодняшнего дня");
+        assertEquals("Пользователь не создан!", exception.getMessage(),
+                "Не должен обрабатывать дни рождения позже сегодняшнего дня");
     }
 
     @Test
@@ -92,8 +92,8 @@ class UserControllerTest {
                         controller.create(emailError);
                     }
                 });
-        assertEquals("Пользователь не создан!", exception.getMessage()
-                , "Не должен обрабатывать не корректно введенную почту");
+        assertEquals("Пользователь не создан!", exception.getMessage(),
+                "Не должен обрабатывать не корректно введенную почту");
     }
 
     //Обновление пользователей
@@ -133,8 +133,8 @@ class UserControllerTest {
                         controller.update(loginNull);
                     }
                 });
-        assertEquals("Пользователь не обновлен!", exception.getMessage()
-                , "Не должен обрабатывать пустой логин");
+        assertEquals("Пользователь не обновлен!", exception.getMessage(),
+                "Не должен обрабатывать пустой логин");
     }
 
     @Test
@@ -148,8 +148,8 @@ class UserControllerTest {
                         controller.update(futureBirthday);
                     }
                 });
-        assertEquals("Пользователь не обновлен!", exception.getMessage()
-                , "Не должен обрабатывать дни рождения позже сегодняшнего дня");
+        assertEquals("Пользователь не обновлен!", exception.getMessage(),
+                "Не должен обрабатывать дни рождения позже сегодняшнего дня");
     }
 
     @Test
@@ -163,8 +163,8 @@ class UserControllerTest {
                         controller.update(emailError);
                     }
                 });
-        assertEquals("Пользователь не обновлен!", exception.getMessage()
-                , "Не должен обрабатывать не корректно введенную почту");
+        assertEquals("Пользователь не обновлен!", exception.getMessage(),
+                "Не должен обрабатывать не корректно введенную почту");
     }
 
     @Test
