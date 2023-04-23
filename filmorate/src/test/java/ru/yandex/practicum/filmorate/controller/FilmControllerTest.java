@@ -14,27 +14,27 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
     FilmController controller;
-    Film film = new Film(1, "pirates", "adventures"
-            , LocalDate.of(2003, 7, 9), 120);
+    Film film = new Film(1, "pirates", "adventures",
+            LocalDate.of(2003, 7, 9), 120);
     Film gran = new Film(0, "pirates2", "«Пираты Карибского моря» (англ. Pirates of " +
             "the Caribbean) — серия приключенческих фильмов о пиратах в Карибском море, режиссёрами которых выступили" +
-            " Гор Вербински (1—3 части), Роб Маршалл (4-я часть), "
-            , LocalDate.of(1895, 12, 28), 1);
+            " Гор Вербински (1—3 части), Роб Маршалл (4-я часть), ",
+            LocalDate.of(1895, 12, 28), 1);
     Film nul = new Film();
-    Film nullName = new Film(0, "", "adventures"
-            , LocalDate.of(2003, 7, 9), 120);
+    Film nullName = new Film(0, "", "adventures",
+            LocalDate.of(2003, 7, 9), 120);
     Film descriptions201 = new Film(0, "pirates2", "«Пираты Карибского моря» (англ. Pirates of " +
             "the Caribbean) — серия приключенческих фильмов о пиратах в Карибском море, режиссёрами которых выступили" +
-            " Гор Вербински (1—3 части), Роб Маршалл (4-я часть), Э"
-            , LocalDate.of(2005, 12, 25), 120);
+            " Гор Вербински (1—3 части), Роб Маршалл (4-я часть), Э",
+            LocalDate.of(2005, 12, 25), 120);
     Film descriptions200 = new Film(0, "pirates2", "«Пираты Карибского моря» (англ. Pirates of " +
             "the Caribbean) — серия приключенческих фильмов о пиратах в Карибском море, режиссёрами которых выступили" +
-            " Гор Вербински (1—3 части), Роб Маршалл (4-я часть), "
-            , LocalDate.of(2005, 12, 25), 120);
-    Film oldDate = new Film(1, "pirates2", "adventures"
-            , LocalDate.of(1895, 12, 27), 120);
-    Film durationNegative = new Film(0, "pirates2", "adventures"
-            , LocalDate.of(2005, 12, 25), -1);
+            " Гор Вербински (1—3 части), Роб Маршалл (4-я часть), ",
+            LocalDate.of(2005, 12, 25), 120);
+    Film oldDate = new Film(1, "pirates2", "adventures",
+            LocalDate.of(1895, 12, 27), 120);
+    Film durationNegative = new Film(0, "pirates2", "adventures",
+            LocalDate.of(2005, 12, 25), -1);
 
     @BeforeEach
     void createController() {
