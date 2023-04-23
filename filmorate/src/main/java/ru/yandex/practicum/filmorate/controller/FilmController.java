@@ -17,6 +17,7 @@ public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
     public static int id = 1;
     //Генерация id
+
     public int generateIdFilm(Film film) {
         log.debug("Началась генерация id фильма");
         while (films.containsKey(id)) {
@@ -26,6 +27,7 @@ public class FilmController {
         return id;
     }
     //Создание фильма
+
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         log.debug("Запрос на создание фильма получен {}", film);
@@ -48,6 +50,7 @@ public class FilmController {
         }
     }
     //Обновление фильма
+
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
         log.debug("Запрос на обновление фильма получен {}", film);
@@ -69,6 +72,7 @@ public class FilmController {
         }
     }
     //Получение всех фильмов
+
     @GetMapping
     public Collection<Film> getFilms() {
         log.debug("Запрос на список фильмов получен");
