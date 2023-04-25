@@ -19,7 +19,6 @@ public class UserController {
 
     //Генерация id
     public int generateId(User user) {
-        log.debug("Началась генерация id пользователя");
         while (users.containsKey(id)) {
             id++;
         }
@@ -31,23 +30,20 @@ public class UserController {
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         log.debug("Получен запрос на создание пользователя {}", user);
-        if ((user.getBirthday().isAfter(LocalDate.now()))
-                || (user.getEmail().isBlank())
-                || (user.getId() < 0)
-                || (user.getLogin().isBlank())
-                || (users.containsKey(user.getId()))) {
-            log.warn("Пользователь не создан {} !", user);
-            throw new ValidationException("Пользователь не создан!");
+        if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.warn("Дата рождения указана не корректно! Пользователь не создан {} !", user);
+            throw new ValidationException("Укажите корректную дату рождения!");
+        } else if (users.containsKey(user.getId())) {
+            log.warn("Пользователь с заданным id уже существует! Пользователь не создан {}!", user);
+            throw new ValidationException("Пользователь с заданным id уже существует!");
         } else {
+            user.setId(generateId(user));
             if (user.getName() == null) {
-                log.debug("Установка имени пользователя {}", user);
+                log.debug("Установка имени пользователя с id = {}", user.getId());
                 user.setName(user.getLogin());
             }
-            if (user.getId() == 0) {
-                user.setId(generateId(user));
-            }
             users.put(user.getId(), user);
-            log.debug("Пользователь создан {}", user);
+            log.info("Пользователь создан {}", user);
             return user;
         }
     }
@@ -56,23 +52,19 @@ public class UserController {
     @PutMapping
     public User update(@Valid @RequestBody User user) {
         log.debug("Получен запрос на обновление пользователя {}", user);
-        if ((user.getBirthday().isAfter(LocalDate.now()))
-                || (user.getEmail().isBlank())
-                || (user.getId() < 0)
-                || (user.getLogin().isBlank())
-                || (!users.containsKey(user.getId()))) {
-            log.warn("Пользователь не обновлен {} !", user);
-            throw new ValidationException("Пользователь не обновлен!");
+        if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.warn("Дата рождения указана не корректно! Пользователь не обновлен {} !", user);
+            throw new ValidationException("Укажите корректную дату рождения!");
+        } else if (!users.containsKey(user.getId())) {
+            log.warn("Пользователь с id = {} не найден!", user.getId());
+            throw new ValidationException("Пользователь не найден!");
         } else {
-            if (user.getName().isBlank()) {
-                log.debug("Установка имени пользователя {}", user);
+            if (user.getName() == null) {
+                log.debug("Установка имени пользователя с id = {}", user.getId());
                 user.setName(user.getLogin());
             }
-            if (user.getId() == 0) {
-                user.setId(generateId(user));
-            }
             users.put(user.getId(), user);
-            log.debug("Пользователь обновлен {}", user);
+            log.info("Пользователь с id = {} обновлен", user.getId());
             return user;
         }
     }

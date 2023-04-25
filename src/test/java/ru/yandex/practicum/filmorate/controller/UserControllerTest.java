@@ -16,14 +16,12 @@ class UserControllerTest {
     UserController controller;
     User user = new User(1, "yandex@mail.ru", "tests", "test1",
             LocalDate.of(1995, 12, 25));
-    User gran = new User(0, "yandex@mail.ru", "tests", "",
+    User existingId = new User(1, "yandex@mail.ru", "tests", "",
             LocalDate.of(2023, 3, 25));
-    User emailError = new User(0, "", "tests", "test1",
+    User nulId = new User(0, "yandex@mail.ru", "tests", "test1",
             LocalDate.of(1995, 12, 25));
-    User loginNull = new User(0, "yandex@mail.ru", " ", "test1",
-            LocalDate.of(1995, 12, 25));
-    User nameNull = new User(0, "yandex@mail.ru", "tests", "",
-            LocalDate.of(1995, 12, 25));
+    User updateUser = new User(1, "yandex@mail.ru", "tests", "test4",
+            LocalDate.of(1999, 10, 2));
     User futureBirthday = new User(0, "yandex@mail.ru", "tests", "test1",
             LocalDate.of(2223, 4, 25));
 
@@ -34,42 +32,29 @@ class UserControllerTest {
     }
 
     @Test
-    void test1_generateIdUser() {
-        int factId = controller.generateId(user);
-        int expectedId = 2;
-        assertEquals(expectedId, factId, "Не верно сгенерирован id");
+    void test1_createUserNulId() {
+        User actual = controller.create(nulId);
+        User expected = nulId;
+        expected.setId(2);
+        assertEquals(expected, actual, "Не удается создать пользователя");
     }
 
     @Test
-    void test2_createUserGran() {
-        User actual = controller.create(gran);
-        User expected = gran;
-        assertEquals(expected, actual, "Соблюдены не все граничные условия");
-    }
-
-    @Test
-    void test3_createUserNullName() {
-        User actual = controller.create(nameNull);
-        User expected = nameNull;
-        assertEquals(expected, actual, "Пользователь с пустым именем не создан!");
-    }
-
-    @Test
-    void test4_createUserLoginNull() {
+    void test2_createUserExistingId() {
         final ValidationException exception = assertThrows(
                 ValidationException.class,
                 new Executable() {
                     @Override
                     public void execute() {
-                        controller.create(loginNull);
+                        controller.create(existingId);
                     }
                 });
-        assertEquals("Пользователь не создан!", exception.getMessage(),
-                "Не должен обрабатывать пустой логин");
+        assertEquals("Пользователь с заданным id уже существует!", exception.getMessage(),
+                "Создает пользователей с уже существующим id");
     }
 
     @Test
-    void test5_createUserFutureBirthday() {
+    void test3_createUserFutureBirthday() {
         final ValidationException exception = assertThrows(
                 ValidationException.class,
                 new Executable() {
@@ -78,67 +63,34 @@ class UserControllerTest {
                         controller.create(futureBirthday);
                     }
                 });
-        assertEquals("Пользователь не создан!", exception.getMessage(),
-                "Не должен обрабатывать дни рождения позже сегодняшнего дня");
-    }
-
-    @Test
-    void test6_createUserEmailError() {
-        final ValidationException exception = assertThrows(
-                ValidationException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        controller.create(emailError);
-                    }
-                });
-        assertEquals("Пользователь не создан!", exception.getMessage(),
-                "Не должен обрабатывать не корректно введенную почту");
+        assertEquals("Укажите корректную дату рождения!", exception.getMessage(),
+                "Создает пользователей с днем рождения позже сегодняшнего дня");
     }
 
     //Обновление пользователей
     @Test
-    void test7_updateUserGran() {
-        gran.setId(1);
-        User actual = controller.update(gran);
-        User expected = gran;
-        List<User> actualList = new ArrayList<>(controller.getUsers());
-        List<User> expectedList = new ArrayList<>();
-        expectedList.add(gran);
-        assertEquals(expected, actual, "При обновлении пользователя соблюдены не все граничные условия");
-        assertEquals(expectedList, actualList, "Проблема при добавлении в лист");
+    void test4_updateUser() {
+        User actual = controller.update(updateUser);
+        User expected = updateUser;
+        assertEquals(expected, actual, "Не удается обновить пользователя");
     }
 
     @Test
-    void test8_updateUserNullName() {
-        nameNull.setId(1);
-        User actual = controller.update(nameNull);
-        nameNull.setName("tests");
-        User expected = nameNull;
-        List<User> actualList = new ArrayList<>(controller.getUsers());
-        List<User> expectedList = new ArrayList<>();
-        expectedList.add(nameNull);
-        assertEquals(expected, actual, "Пользователь с пустым именем не создан!");
-        assertEquals(expectedList, actualList, "Проблема при добавлении в лист");
-    }
-
-    @Test
-    void test9_updateUserLoginNull() {
-        loginNull.setId(1);
+    void test5_updateUserNulId() {
         final ValidationException exception = assertThrows(
                 ValidationException.class,
                 new Executable() {
                     @Override
                     public void execute() {
-                        controller.update(loginNull);
+                        controller.update(nulId);
                     }
                 });
-        assertEquals("Пользователь не обновлен!", exception.getMessage(),
-                "Не должен обрабатывать пустой логин");
+        assertEquals("Пользователь не найден!", exception.getMessage(),
+                "Обновляет пользователей без указанного id");
     }
 
     @Test
-    void test10_updateUserFutureBirthday() {
+    void test6_updateUserFutureBirthday() {
         futureBirthday.setId(1);
         final ValidationException exception = assertThrows(
                 ValidationException.class,
@@ -148,32 +100,18 @@ class UserControllerTest {
                         controller.update(futureBirthday);
                     }
                 });
-        assertEquals("Пользователь не обновлен!", exception.getMessage(),
-                "Не должен обрабатывать дни рождения позже сегодняшнего дня");
+        assertEquals("Укажите корректную дату рождения!", exception.getMessage(),
+                "Обновляет пользователей с днем рождения позже сегодняшнего дня");
     }
 
     @Test
-    void test11_updateUserEmailError() {
-        emailError.setId(1);
-        final ValidationException exception = assertThrows(
-                ValidationException.class,
-                new Executable() {
-                    @Override
-                    public void execute() {
-                        controller.update(emailError);
-                    }
-                });
-        assertEquals("Пользователь не обновлен!", exception.getMessage(),
-                "Не должен обрабатывать не корректно введенную почту");
-    }
-
-    @Test
-    void test12_getAllUsers() {
-        controller.create(gran);
+    void test7_getAllUsers() {
+        existingId.setId(0);
+        controller.create(existingId);
         List<User> actual = new ArrayList<>(controller.getUsers());
         List<User> expected = new ArrayList<>();
         expected.add(user);
-        expected.add(gran);
+        expected.add(existingId);
         assertEquals(expected, actual);
     }
 }
