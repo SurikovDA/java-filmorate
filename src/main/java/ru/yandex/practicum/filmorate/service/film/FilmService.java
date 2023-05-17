@@ -10,4 +10,12 @@ public interface FilmService {
     public void deleteLike(long filmId, long userId);
 
     public Collection<Film> getMostPopularFilms(Integer count);
+
+    public Film create(Film film);
+
+    public Film update(Film film);
+
+    public Collection<Film> getFilms();
+
+    public Film getFilmById(long id);
 }

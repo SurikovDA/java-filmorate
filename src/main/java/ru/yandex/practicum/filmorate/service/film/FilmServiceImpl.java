@@ -65,4 +65,24 @@ public class FilmServiceImpl implements FilmService {
                 .limit(count)
                 .collect(Collectors.toSet());
     }
+
+    @Override
+    public Film create(Film film) {
+        return filmStorage.create(film);
+    }
+
+    @Override
+    public Film update(Film film) {
+        return filmStorage.update(film);
+    }
+
+    @Override
+    public Collection<Film> getFilms() {
+        return filmStorage.getFilms();
+    }
+
+    @Override
+    public Film getFilmById(long id) {
+        return filmStorage.getFilmById(id);
+    }
 }

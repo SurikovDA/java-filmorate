@@ -63,4 +63,29 @@ public class UserServiceImpl implements UserService {
         Set<Long> friends = userStorage.getUserById(userId).getFriends();
         return userStorage.getUsersById(friends);
     }
+
+    @Override
+    public User create(User user) {
+        return userStorage.create(user);
+    }
+
+    @Override
+    public User update(User user) {
+        return userStorage.update(user);
+    }
+
+    @Override
+    public Collection<User> getUsers() {
+        return userStorage.getUsers();
+    }
+
+    @Override
+    public User getUserById(long userId) {
+        return userStorage.getUserById(userId);
+    }
+
+    @Override
+    public Collection<User> getUsersById(Set<Long> idCommonFriends) {
+        return userStorage.getUsersById(idCommonFriends);
+    }
 }

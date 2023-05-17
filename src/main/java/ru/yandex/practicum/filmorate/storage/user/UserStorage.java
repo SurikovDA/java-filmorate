@@ -15,5 +15,5 @@ public interface UserStorage {
 
     public User getUserById(long userId);
 
-    public Collection<User> getUsersById(Set<Long> idCommonfriends);
+    public Collection<User> getUsersById(Set<Long> idCommonFriends);
 }
