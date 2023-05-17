@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @Slf4j
@@ -34,10 +33,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User create(User user) {
         log.debug("Получен запрос на создание пользователя {}", user);
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.warn("Дата рождения указана не корректно! Пользователь не создан {} !", user);
-            throw new ValidationException("Укажите корректную дату рождения!");
-        } else if (users.containsKey(user.getId())) {
+        if (users.containsKey(user.getId())) {
             log.warn("Пользователь с заданным id уже существует! Пользователь не создан {}!", user);
             throw new ValidationException("Пользователь с заданным id уже существует!");
         } else {
@@ -56,10 +52,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User update(User user) {
         log.debug("Получен запрос на обновление пользователя {}", user);
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.warn("Дата рождения указана не корректно! Пользователь не обновлен {} !", user);
-            throw new ValidationException("Укажите корректную дату рождения!");
-        } else if (!users.containsKey(user.getId())) {
+        if (!users.containsKey(user.getId())) {
             log.warn("Пользователь с id = {} не найден!", user.getId());
             throw new UserNotFoundException("Пользователь не найден!");
         } else {

@@ -3,10 +3,10 @@ package ru.yandex.practicum.filmorate.service.film;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -16,22 +16,21 @@ import java.util.stream.Collectors;
 @Service
 public class FilmServiceImpl implements FilmService {
     private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
 
     @Autowired
-    public FilmServiceImpl(FilmStorage filmStorage) {
+    public FilmServiceImpl(FilmStorage filmStorage, UserStorage userStorage) {
         this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
     }
 
     //Добавление лайка
     @Override
     public void addLike(long filmId, long userId) {
         log.debug("Получен запрос на добавление лайка фильму");
-        filmStorage.getFilms().stream()
-                .filter(film -> film.getId() == filmId)
-                .findFirst()
-                .get()
-                .getLikes()
-                .add(userId);
+        Film film = filmStorage.getFilmById(filmId);
+        User user = userStorage.getUserById(userId);
+        film.getLikes().add(user.getId());
         log.debug("Лайк добавлен");
     }
 
@@ -39,17 +38,9 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void deleteLike(long filmId, long userId) {
         log.debug("Получен запрос на удаление лайка фильму");
-        if (userId < 0) {
-            throw new UserNotFoundException("id указан меньше 0!");
-        } else if (filmId < 0) {
-            throw new FilmNotFoundException("id фильма не может быть отрицательным!");
-        }
-        filmStorage.getFilms().stream()
-                .filter(film -> film.getId() == filmId)
-                .findFirst()
-                .get()
-                .getLikes()
-                .remove(userId);
+        Film film = filmStorage.getFilmById(filmId);
+        User user = userStorage.getUserById(userId);
+        film.getLikes().remove(user.getId());
         log.debug("Лайк к фильму удален");
     }
 
@@ -63,24 +54,28 @@ public class FilmServiceImpl implements FilmService {
                 .stream()
                 .sorted(comparator.reversed())
                 .limit(count)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
+    //Создание фильма
     @Override
     public Film create(Film film) {
         return filmStorage.create(film);
     }
 
+    //Обновление фильма
     @Override
     public Film update(Film film) {
         return filmStorage.update(film);
     }
 
+    //Получение всех фильмов
     @Override
     public Collection<Film> getFilms() {
         return filmStorage.getFilms();
     }
 
+    //Получение фильма по id
     @Override
     public Film getFilmById(long id) {
         return filmStorage.getFilmById(id);

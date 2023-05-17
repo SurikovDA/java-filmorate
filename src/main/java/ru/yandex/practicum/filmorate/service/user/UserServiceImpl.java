@@ -64,26 +64,31 @@ public class UserServiceImpl implements UserService {
         return userStorage.getUsersById(friends);
     }
 
+    //Создание пользователя
     @Override
     public User create(User user) {
         return userStorage.create(user);
     }
 
+    //Обновление пользователя
     @Override
     public User update(User user) {
         return userStorage.update(user);
     }
 
+    //Получение всех пользователей
     @Override
     public Collection<User> getUsers() {
         return userStorage.getUsers();
     }
 
+    //Получение пользователя по id
     @Override
     public User getUserById(long userId) {
         return userStorage.getUserById(userId);
     }
 
+    //Получение списка пользователей по списку id
     @Override
     public Collection<User> getUsersById(Set<Long> idCommonFriends) {
         return userStorage.getUsersById(idCommonFriends);

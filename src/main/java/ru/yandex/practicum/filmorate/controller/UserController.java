@@ -3,10 +3,12 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.*;
 
 @RestController
@@ -23,13 +25,26 @@ public class UserController {
     //Создание User
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        return userService.create(user);
+        if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.warn("Дата рождения указана не корректно! Пользователь не создан {} !", user);
+            throw new ValidationException("Укажите корректную дату рождения!");
+        } else {
+            return userService.create(user);
+        }
     }
 
     //Обновление User
     @PutMapping
     public User update(@Valid @RequestBody User user) {
-        return userService.update(user);
+        if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.warn("Дата рождения указана не корректно! Пользователь не обновлен {} !", user);
+            throw new ValidationException("Укажите корректную дату рождения!");
+        } else if (user.getId() == 0) {
+            log.warn("id пользователя указан 0!");
+            throw new ValidationException("id пользователя не может быть равен 0!");
+        } else {
+            return userService.update(user);
+        }
     }
 
     //Получение всех пользователей
