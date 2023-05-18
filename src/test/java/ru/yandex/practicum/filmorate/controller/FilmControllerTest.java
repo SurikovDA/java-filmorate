@@ -5,32 +5,41 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
+import ru.yandex.practicum.filmorate.service.film.FilmServiceImpl;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
     FilmController controller;
+    FilmStorage filmStorage = new InMemoryFilmStorage();
+    UserStorage userStorage = new InMemoryUserStorage();
+    FilmService filmService = new FilmServiceImpl(filmStorage, userStorage);
+
+    Set<Long> likes = new HashSet<>();
     Film film = new Film(0, "pirates", "adventures",
-            LocalDate.of(2003, 7, 9), 120);
+            LocalDate.of(2003, 7, 9), 120, likes);
     Film createFilm = new Film(0, "pirates", "adventures",
-            LocalDate.of(2003, 7, 9), 120);
+            LocalDate.of(2003, 7, 9), 120, likes);
     Film existingId = new Film(1, "pirates2", "«Пираты Карибского моря» (англ. Pirates of " +
             "the Caribbean) — серия приключенческих фильмов о пиратах в Карибском море, режиссёрами которых выступили" +
             " Гор Вербински (1—3 части), Роб Маршалл (4-я часть), ",
-            LocalDate.of(1895, 12, 28), 1);
+            LocalDate.of(1895, 12, 28), 1, likes);
     Film oldDate = new Film(0, "pirates2", "adventures",
-            LocalDate.of(1895, 12, 27), 120);
+            LocalDate.of(1895, 12, 27), 120, likes);
 
     @BeforeEach
     void createController() {
-        controller = new FilmController();
+        controller = new FilmController(filmService);
         controller.create(film);
     }
-
 
     @Test
     void test1_createFilmsExistingId() {

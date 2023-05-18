@@ -5,29 +5,39 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.service.user.UserServiceImpl;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserControllerTest {
     UserController controller;
+    UserStorage userStorage = new InMemoryUserStorage();
+    UserService userService = new UserServiceImpl(userStorage);
+
+    Set<Long> friends = new HashSet<>();
     User user = new User(1, "yandex@mail.ru", "tests", "test1",
-            LocalDate.of(1995, 12, 25));
+            LocalDate.of(1995, 12, 25), friends);
     User existingId = new User(1, "yandex@mail.ru", "tests", "",
-            LocalDate.of(2023, 3, 25));
+            LocalDate.of(2023, 3, 25), friends);
     User nulId = new User(0, "yandex@mail.ru", "tests", "test1",
-            LocalDate.of(1995, 12, 25));
+            LocalDate.of(1995, 12, 25), friends);
     User updateUser = new User(1, "yandex@mail.ru", "tests", "test4",
-            LocalDate.of(1999, 10, 2));
+            LocalDate.of(1999, 10, 2), friends);
     User futureBirthday = new User(0, "yandex@mail.ru", "tests", "test1",
-            LocalDate.of(2223, 4, 25));
+            LocalDate.of(2223, 4, 25), friends);
 
     @BeforeEach
     void createUserController() {
-        controller = new UserController();
+        controller = new UserController(userService);
         controller.create(user);
     }
 
@@ -85,7 +95,7 @@ class UserControllerTest {
                         controller.update(nulId);
                     }
                 });
-        assertEquals("Пользователь не найден!", exception.getMessage(),
+        assertEquals("id пользователя не может быть равен 0!", exception.getMessage(),
                 "Обновляет пользователей без указанного id");
     }
 
