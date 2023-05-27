@@ -7,14 +7,18 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class Film {
+    @PositiveOrZero
     private long id;
     @NotBlank(message = "Название фильма не может быть пустым!")
     @NotNull(message = "Задайте название фильма!")
@@ -28,4 +32,6 @@ public class Film {
     @Positive(message = "Продолжительность фильма не может быть отрицательной!")
     private Integer duration;
     Set<Long> likes = new HashSet<>();
+    List<Genre> genres = new ArrayList<>();
+    Mpa mpa = new Mpa();
 }
