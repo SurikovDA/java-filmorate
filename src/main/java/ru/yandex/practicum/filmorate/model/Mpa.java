@@ -12,9 +12,14 @@ import javax.validation.constraints.PositiveOrZero;
 @AllArgsConstructor
 public class Mpa {
     @PositiveOrZero
-    private long id;
+    private int id;
     @NotBlank(message = "Название возрастного ограничения не может быть пустым!")
     private String name;
     @NotBlank(message = "Описание возрастного ограничения не может быть пустым!")
     private String description;
+
+    public Mpa(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

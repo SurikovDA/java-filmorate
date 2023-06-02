@@ -12,7 +12,7 @@ import javax.validation.constraints.PositiveOrZero;
 @AllArgsConstructor
 public class Genre {
     @PositiveOrZero
-    private long id;
+    private Long id;
     @NotBlank(message = "Название жанра не может быть пустым!")
     private String name;
 }

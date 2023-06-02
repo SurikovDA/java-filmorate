@@ -6,9 +6,9 @@ import java.util.Collection;
 import java.util.Set;
 
 public interface UserService {
-    public User addFriend(long userId, long friendId);
+    public void addFriend(long userId, long friendId);
 
-    public User deleteFromFriends(long userId, long friendId);
+    public void deleteFromFriends(long userId, long friendId);
 
     public Collection<User> getCommonFriends(long userId, long friendId);
 
