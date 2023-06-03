@@ -49,8 +49,8 @@ public class FilmDaoImpl implements FilmDao {
         return jdbcTemplate.query("SELECT F.* " +
                                 "FROM FILMS AS F " +
                                 "JOIN MPA AS M ON F.MPA_ID = M.MPA_ID " +
-                                "WHERE F.ID = ? "
-                        , new Object[]{id}, new BeanPropertyRowMapper<>(Film.class)).stream()
+                                "WHERE F.ID = ? ",
+                        new Object[]{id}, new BeanPropertyRowMapper<>(Film.class)).stream()
                 .findAny().orElse(null);
     }
 
