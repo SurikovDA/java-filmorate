@@ -50,7 +50,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getUserById(long id) {
-        return jdbcTemplate.query("SELECT * FROM users WHERE id = ?", new Object[]{id}, new BeanPropertyRowMapper<>(User.class)).
-                stream().findAny().orElse(null);
+        return jdbcTemplate.query("SELECT * FROM users WHERE id = ?", new Object[]{id},
+                new BeanPropertyRowMapper<>(User.class)).stream().findAny().orElse(null);
     }
 }
