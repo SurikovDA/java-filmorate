@@ -50,8 +50,8 @@ public class MpaDaoImpl implements MpaDao {
         String sql = "SELECT M.MPA_ID AS ID, M.NAME, M.DESCRIPTION \n" +
                 "FROM MPA M " +
                 "WHERE M.MPA_ID = ?;";
-        return jdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Mpa.class)).
-                stream().findAny().orElse(null);
+        return jdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Mpa.class))
+                .stream().findAny().orElse(null);
     }
 
     @Override
@@ -60,9 +60,9 @@ public class MpaDaoImpl implements MpaDao {
                 "FROM MPA m \n" +
                 "JOIN FILMS f ON  m.MPA_ID = f.MPA_ID\n" +
                 "WHERE f.ID = ?";
-        return jdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Mpa.class)).
-                stream().
-                findAny().
-                orElse(null);
+        return jdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Mpa.class))
+                .stream()
+                .findAny()
+                .orElse(null);
     }
 }
