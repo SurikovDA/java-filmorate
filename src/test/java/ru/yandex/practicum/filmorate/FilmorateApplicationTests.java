@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
 import java.time.LocalDate;
@@ -30,6 +31,7 @@ class FilmorateApplicationTests {
 
     private final UserService userService;
     private final UserController userController;
+    private final FilmService filmService;
     private final FilmController filmController;
 
     //Создание пользователей
@@ -49,7 +51,7 @@ class FilmorateApplicationTests {
     //Создание фильмов
     Set<Long> likes = new HashSet<>();
     List<Genre> genres = new ArrayList<>();
-    Mpa mpa = new Mpa();
+    Mpa mpa = new Mpa(1, "G");
     Film film = new Film(0, "pirates", "adventures",
             LocalDate.of(2003, 7, 9), 120, likes, genres, mpa);
     Film createFilm = new Film(0, "pirates", "adventures",
@@ -151,10 +153,46 @@ class FilmorateApplicationTests {
                 "Обновляет пользователей с днем рождения позже сегодняшнего дня");
     }
 
+    @Test
+    void test8_getAllUsers() {
+        existingId.setId(0);
+        userController.create(existingId);
+        List<User> actual = new ArrayList<>(userController.getUsers());
+        int expected = 12;
+        assertEquals(expected, actual.size());
+    }
+
+
     //Тесты фильмов
+    @BeforeEach
+    void createController() {
+        filmController.create(film);
+    }
 
     @Test
-    void test8_createFilmsOldDate() {
+    void test9_createFilmsExistingId() {
+        final ValidationException exception = assertThrows(
+                ValidationException.class,
+                new Executable() {
+                    @Override
+                    public void execute() {
+                        filmController.create(existId);
+                    }
+                });
+        assertEquals("Фильм с указанным id уже существует!", exception.getMessage(),
+                "Не должен обрабатывать фильмы с уже существующим id");
+    }
+
+    @Test
+    void test10_createFilm() {
+        Film actual = filmController.create(createFilm);
+        Film expected = createFilm;
+        expected.setId(2);
+        assertEquals(expected, actual, "Не удается создать фильм");
+    }
+
+    @Test
+    void test11_createFilmsOldDate() {
         final ValidationException exception = assertThrows(
                 ValidationException.class,
                 new Executable() {
@@ -169,7 +207,22 @@ class FilmorateApplicationTests {
 
     //Обновление фильмов
     @Test
-    void test9_updateFilmsOldDate() {
+    void test12_updateFilm() {
+        Film actual = filmController.update(existId);
+        Film expected = existId;
+        assertEquals(expected, actual, "Не удается обновить фильм");
+    }
+
+    @Test
+    void test13_updateFilmsExistingId() {
+        existId.setId(1);
+        Film actual = filmController.update(existId);
+        Film expected = existId;
+        assertEquals(expected, actual, "При обновлении фильма соблюдены не все граничные условия");
+    }
+
+    @Test
+    void test14_updateFilmsOldDate() {
         oldDate.setId(1);
         final ValidationException exception = assertThrows(
                 ValidationException.class,
@@ -182,4 +235,12 @@ class FilmorateApplicationTests {
         assertEquals("Фильм не обновлен. Дата выпуска фильма не может быть раньше даты создания кино!",
                 exception.getMessage(), "Не должен обрабатывать фильмы старше 28.12.1895");
     }
+
+    @Test
+    void test15_getFilms() {
+        List<Film> actual = new ArrayList<>(filmController.getFilms());
+        int expected = 10;
+        assertEquals(expected, actual.size());
+    }
 }
+
