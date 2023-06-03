@@ -13,6 +13,7 @@ import java.util.List;
 @Primary
 public class MpaDbStorage implements MpaDao {
     private final MpaDao mpaDao;
+
     @Override
     public Mpa create(Mpa mpa) {
         return mpaDao.create(mpa);

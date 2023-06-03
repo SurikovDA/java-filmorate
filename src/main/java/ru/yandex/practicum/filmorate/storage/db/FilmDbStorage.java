@@ -16,6 +16,7 @@ import java.util.Collection;
 @Slf4j
 public class FilmDbStorage implements FilmStorage {
     private final FilmDao filmDao;
+
     @Override
     public Film create(Film film) {
         return filmDao.create(film);

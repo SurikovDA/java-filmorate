@@ -18,7 +18,7 @@ public class GenreController {
     GenreService genreService;
 
     @Autowired
-    GenreController(GenreService genreService){
+    GenreController(GenreService genreService) {
         this.genreService = genreService;
     }
 

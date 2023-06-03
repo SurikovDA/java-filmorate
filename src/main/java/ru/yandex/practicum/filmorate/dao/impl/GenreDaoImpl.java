@@ -11,6 +11,7 @@ import java.util.Collection;
 
 @Component
 public class GenreDaoImpl implements GenreDao {
+
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired

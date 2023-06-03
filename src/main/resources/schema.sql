@@ -36,7 +36,7 @@ create TABLE IF NOT EXISTS films (
 	duration INTEGER NOT NULL,
 	mpa_id INTEGER,
 	CONSTRAINT film_pk PRIMARY KEY (id),
-	CONSTRAINT film_fk FOREIGN KEY (mpa_id) REFERENCES mpa(mpa_id) ON delete CASCADE ON update CASCADE
+	CONSTRAINT film_fk FOREIGN KEY (mpa_id) REFERENCES mpa(mpa_id) ON UPDATE NO ACTION
 );
 
 --Создание FRIENDSHIP

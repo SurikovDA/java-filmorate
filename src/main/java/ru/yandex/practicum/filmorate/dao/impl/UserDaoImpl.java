@@ -28,7 +28,7 @@ public class UserDaoImpl implements UserDao {
                 "VALUES(?, ?, ?, ?);";
 
         jdbcTemplate.update(sql, user.getName(), user.getLogin(), user.getEmail(), user.getBirthday());
-        long id = jdbcTemplate.queryForObject("SELECT MAX(ID) FROM users", Long.class);
+        Long id = jdbcTemplate.queryForObject("SELECT MAX(ID) FROM users", Long.class);
         user.setId(id);
         return user;
     }
