@@ -51,7 +51,7 @@ public class GenreDaoImpl implements GenreDao {
         String sql = "SELECT G.GENRE_ID AS ID, G.NAME " +
                 "FROM GENRE G " +
                 "WHERE G.GENRE_ID = ?";
-        return jdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Genre.class)).stream().findAny().
-                orElse(null);
+        return jdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Genre.class)).stream().findAny()
+                .orElse(null);
     }
 }
