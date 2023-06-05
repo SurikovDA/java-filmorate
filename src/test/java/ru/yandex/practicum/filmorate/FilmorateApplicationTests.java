@@ -53,15 +53,15 @@ class FilmorateApplicationTests {
     List<Genre> genres = new ArrayList<>();
     Mpa mpa = new Mpa(1, "G");
     Film film = new Film(0, "pirates", "adventures",
-            LocalDate.of(2003, 7, 9), 120, likes, genres, mpa);
+            LocalDate.of(2003, 7, 9), 120, likes, 0, genres, mpa);
     Film createFilm = new Film(0, "pirates", "adventures",
-            LocalDate.of(2003, 7, 9), 120, likes, genres, mpa);
+            LocalDate.of(2003, 7, 9), 120, likes, 0, genres, mpa);
     Film existId = new Film(1, "pirates2", "«Пираты Карибского моря» (англ. Pirates of " +
             "the Caribbean) — серия приключенческих фильмов о пиратах в Карибском море, режиссёрами которых выступили" +
             " Гор Вербински (1—3 части), Роб Маршалл (4-я часть), ",
-            LocalDate.of(1895, 12, 28), 1, likes, genres, mpa);
+            LocalDate.of(1895, 12, 28), 1, likes, 0, genres, mpa);
     Film oldDate = new Film(0, "pirates2", "adventures",
-            LocalDate.of(1895, 12, 27), 120, likes, genres, mpa);
+            LocalDate.of(1895, 12, 27), 120, likes, 0, genres, mpa);
 
     //Тесты пользователей
     @BeforeEach
