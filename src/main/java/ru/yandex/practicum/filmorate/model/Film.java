@@ -17,6 +17,7 @@ import java.util.Set;
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Film {
     @PositiveOrZero
     private long id;
@@ -32,6 +33,7 @@ public class Film {
     @Positive(message = "Продолжительность фильма не может быть отрицательной!")
     private Integer duration;
     Set<Long> likes = new HashSet<>();
+    int rating = 0;
     List<Genre> genres = new ArrayList<>();
     Mpa mpa = new Mpa();
 }

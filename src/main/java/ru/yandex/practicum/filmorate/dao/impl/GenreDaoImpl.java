@@ -3,10 +3,13 @@ package ru.yandex.practicum.filmorate.dao.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.model.Genre;
 
+import java.sql.PreparedStatement;
 import java.util.Collection;
 
 @Component
@@ -21,11 +24,18 @@ public class GenreDaoImpl implements GenreDao {
 
     @Override
     public Genre create(Genre genre) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = "INSERT INTO GENRE\n" +
                 "(NAME)\n" +
                 "VALUES(?);";
-        jdbcTemplate.update(sql, genre.getName());
-        Long id = jdbcTemplate.queryForObject("SELECT MAX(GENRE_ID) FROM GENRE", Long.class);
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection
+                    .prepareStatement(sql, new String[]{"GENRE_ID"});
+            ps.setString(1, genre.getName());
+            return ps;
+        }, keyHolder);
+
+        Long id = (Long) keyHolder.getKey().longValue();
         genre.setId(id);
         return genre;
     }

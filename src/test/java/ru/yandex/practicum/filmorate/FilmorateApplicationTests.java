@@ -242,5 +242,8 @@ class FilmorateApplicationTests {
         int expected = 10;
         assertEquals(expected, actual.size());
     }
+
+    //Проверка дополнительного функционала
+
 }
 

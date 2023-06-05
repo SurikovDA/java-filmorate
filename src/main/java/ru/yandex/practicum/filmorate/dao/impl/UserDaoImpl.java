@@ -4,10 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Slf4j
@@ -23,12 +26,22 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User create(User user) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = "INSERT INTO users\n" +
                 "(NAME, LOGIN, EMAIL, BIRTHDAY)\n" +
                 "VALUES(?, ?, ?, ?);";
 
-        jdbcTemplate.update(sql, user.getName(), user.getLogin(), user.getEmail(), user.getBirthday());
-        Long id = jdbcTemplate.queryForObject("SELECT MAX(ID) FROM users", Long.class);
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection
+                    .prepareStatement(sql, new String[]{"id"});
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getLogin());
+            ps.setString(3, user.getEmail());
+            ps.setDate(4, java.sql.Date.valueOf(user.getBirthday()));
+            return ps;
+        }, keyHolder);
+
+        Long id = (Long) keyHolder.getKey().longValue();
         user.setId(id);
         return user;
     }

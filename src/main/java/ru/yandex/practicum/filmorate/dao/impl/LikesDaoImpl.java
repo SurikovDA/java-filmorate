@@ -4,20 +4,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.dao.FilmGenreDao;
 import ru.yandex.practicum.filmorate.dao.LikesDao;
+import ru.yandex.practicum.filmorate.dao.MpaDao;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 public class LikesDaoImpl implements LikesDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final MpaDao mpaDao;
+    private final FilmGenreDao filmGenreDao;
 
     @Autowired
-    public LikesDaoImpl(JdbcTemplate jdbcTemplate) {
+    public LikesDaoImpl(JdbcTemplate jdbcTemplate, MpaDao mpaDao, FilmGenreDao filmGenreDao) {
         this.jdbcTemplate = jdbcTemplate;
+        this.mpaDao = mpaDao;
+        this.filmGenreDao = filmGenreDao;
     }
 
     @Override
@@ -40,18 +51,34 @@ public class LikesDaoImpl implements LikesDao {
 
     @Override
     public List<Film> getPopularFilms(long count) {
-        String sql = "SELECT f.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, count(l.USER_ID) rating\n" +
+        String sql = "SELECT f.*, count(l.USER_ID) rating\n" +
                 "FROM FILMS f \n" +
                 "left JOIN LIKES l ON l.FILM_ID = f.ID \n" +
                 "GROUP BY f.id\n" +
                 "ORDER BY rating DESC\n" +
                 "LIMIT ?";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Film.class), count);
+        return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToFilm(rs), count).stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void delete(long userId, long filmId) {
         String sql = "DELETE FROM LIKES WHERE USER_ID = ? AND FILM_ID = ?";
         jdbcTemplate.update(sql, userId, filmId);
+    }
+
+    private Film mapRowToFilm(ResultSet resultSet) throws SQLException {
+        return Film.builder()
+                .id(resultSet.getLong("ID"))
+                .name(resultSet.getString("NAME"))
+                .description(resultSet.getString("DESCRIPTION"))
+                .releaseDate(resultSet.getDate("RELEASE_DATE").toLocalDate())
+                .duration(resultSet.getInt("DURATION"))
+                .mpa(mpaDao.getMpaById(resultSet.getInt("MPA_ID")))
+                .likes(new HashSet<>())
+                .rating(resultSet.getInt("rating"))
+                .genres(filmGenreDao.readGenresByFilmId(resultSet.getLong("ID")))
+                .build();
     }
 }

@@ -22,7 +22,6 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Genre create(Genre genre) {
-        validate(genre);
         if (genreDbStorage.getGenreById(genre.getId()) != null) {
             throw new ValidationException("Жанр с таким id уже есть в базе");
         }
@@ -36,7 +35,6 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Genre update(Genre genre) {
-        validate(genre);
         if (genreDbStorage.getGenreById(genre.getId()) != null) {
             log.info("Жанр с id '{}' обновлен", genre.getId());
             return genreDbStorage.update(genre);
@@ -52,17 +50,6 @@ public class GenreServiceImpl implements GenreService {
             return genreDbStorage.getGenreById(id);
         } else {
             throw new EntityNotFoundException(String.format("Жанра с id=%d нет в списке", id));
-        }
-    }
-
-    private void validate(Genre genre) {
-        if (genre.getName().isEmpty() || genre.getName().isBlank()) {
-            log.info("ValidationException (Пустое название жанра)");
-            throw new ValidationException("Пустое название жанра");
-        }
-        if (genre.getId() < 0) {
-            log.info("ValidationException (Значение id не может быть отрицательным)");
-            throw new ValidationException("Значение id не может быть отрицательным");
         }
     }
 }
