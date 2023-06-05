@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.storage.FilmGenreStorage;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class FilmGenreDbStorage implements FilmGenreStorage {
@@ -32,6 +33,12 @@ public class FilmGenreDbStorage implements FilmGenreStorage {
                 "WHERE FILM_GENRE.film_id = ?\n" +
                 "ORDER BY GENRE.GENRE_ID";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Genre.class), filmId);
+    }
+
+    @Override
+    public List<Genre> setGenresFilm(long filmId, Set<Genre> genres) {
+        genres.forEach((genre) -> create(filmId, genre.getId()));
+        return readGenresByFilmId(filmId);
     }
 
     @Override

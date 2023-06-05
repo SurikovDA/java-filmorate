@@ -11,10 +11,7 @@ import javax.validation.constraints.PositiveOrZero;
 @AllArgsConstructor
 public class Friendship {
     @PositiveOrZero
-    private long id;
-    @PositiveOrZero
     private long userId;
     @PositiveOrZero
     private long friendId;
-    private boolean status;
 }

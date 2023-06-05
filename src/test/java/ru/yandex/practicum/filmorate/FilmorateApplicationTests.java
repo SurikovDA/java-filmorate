@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.FilmController;
+import ru.yandex.practicum.filmorate.controller.GenreController;
+import ru.yandex.practicum.filmorate.controller.MpaController;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -16,6 +18,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.storage.LikesStorage;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -33,6 +36,10 @@ class FilmorateApplicationTests {
     private final UserController userController;
     private final FilmService filmService;
     private final FilmController filmController;
+    private final LikesStorage likesStorage;
+
+    private final MpaController mpaController;
+    private final GenreController genreController;
 
     //Создание пользователей
     Set<Long> friends = new HashSet<>();
@@ -158,7 +165,7 @@ class FilmorateApplicationTests {
         existingId.setId(0);
         userController.create(existingId);
         List<User> actual = new ArrayList<>(userController.getUsers());
-        int expected = 12;
+        int expected = 18;
         assertEquals(expected, actual.size());
     }
 
@@ -239,11 +246,70 @@ class FilmorateApplicationTests {
     @Test
     void test15_getFilms() {
         List<Film> actual = new ArrayList<>(filmController.getFilms());
-        int expected = 10;
+        int expected = 14;
         assertEquals(expected, actual.size());
     }
 
     //Проверка дополнительного функционала
+    @Test
+    void test_16_addLikeFilm() {
+        filmController.addLike(film.getId(), user.getId());
+        int actual = likesStorage.readLikesByFilmId(film.getId()).size();
+        int expected = 1;
+        assertEquals(actual, expected);
+    }
 
+    @Test
+    void test_17_deleteLike() {
+        filmController.addLike(1, 1);
+        filmController.unlike(1, 1);
+        int actual = likesStorage.readLikesByFilmId(1).size();
+        int expected = 0;
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void test_18_getPopularFilms() {
+        filmController.addLike(film.getId(), 1);
+        int actual = filmController.getPopularFilms(1).size();
+        int expected = 1;
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    void test_19_getGenre() {
+        Genre actual = genreController.get(2);
+        Genre expected = new Genre(2L, "Драма");
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    void test_20_getAllGenres() {
+        int actual = genreController.getAll().size();
+        int expected = 6;
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    void test_21_creatNewGenre() {
+        genreController.create(new Genre(7L, "TestCreate"));
+        Genre actual = genreController.get(7);
+        Genre expected = new Genre(7L, "TestCreate");
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    void test_22_updateGenre() {
+        Genre actual = genreController.update(new Genre(1L, "TestUpdate"));
+        Genre expected = new Genre(1L, "TestUpdate");
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void test_23_getMpa() {
+        int actual = mpaController.getAll().size();
+        int expected = 5;
+        assertEquals(actual, expected);
+    }
 }
 

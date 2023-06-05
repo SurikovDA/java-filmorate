@@ -26,7 +26,6 @@ public class MpaServiceImpl implements MpaService {
         if (mpaDbStorage.getMpaById(mpa.getId()) != null) {
             throw new ValidationException("MPA с таким id уже есть в базе");
         }
-        validate(mpa);
         log.info("MPA с id '{}' добавлен в список", mpa.getId());
         return mpaDbStorage.create(mpa);
     }
@@ -39,7 +38,6 @@ public class MpaServiceImpl implements MpaService {
     @Override
     public Mpa update(Mpa mpa) {
         if (mpaDbStorage.getMpaById(mpa.getId()) != null) {
-            validate(mpa);
             log.info("MPA с id '{}' обновлен", mpa.getId());
             return mpaDbStorage.update(mpa);
         } else {
@@ -54,17 +52,6 @@ public class MpaServiceImpl implements MpaService {
             return mpaDbStorage.getMpaById(id);
         } else {
             throw new EntityNotFoundException(String.format("MPA с id=%d нет в списке", id));
-        }
-    }
-
-    private void validate(Mpa mpa) {
-        if (mpa.getName().isEmpty() || mpa.getName().isBlank()) {
-            log.info("ValidationException (Пустое название MPA)");
-            throw new ValidationException("Пустое название MPA");
-        }
-        if (mpa.getId() < 0) {
-            log.info("ValidationException (Значение id не может быть отрицательным)");
-            throw new ValidationException("Значение id не может быть отрицательным");
         }
     }
 }

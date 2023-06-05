@@ -10,14 +10,12 @@ import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -65,12 +63,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public Collection<Film> getMostPopularFilms(Integer count) {
         log.debug("Получен запрос на получение популярных фильмов");
-        Collection<Film> popularFilms = likesDao.getPopularFilms(count);
-        for (Film film : popularFilms) {
-            film.setMpa(mpaDao.getMpaByFilmId(film.getId()));
-            film.setGenres(filmGenreDao.readGenresByFilmId(film.getId()));
-        }
-        return popularFilms;
+        return likesDao.getPopularFilms(count);
     }
 
     //Создание фильма
@@ -81,17 +74,11 @@ public class FilmServiceImpl implements FilmService {
         } else {
             Film newFilm = filmStorage.create(film);
             log.debug("Фильм с id = {} добавлен в бд", film.getId());
-            newFilm.setMpa(mpaDao.getMpaById(film.getMpa().getId()));
             if (film.getGenres() != null) {
-                addFilmGenre(newFilm.getId(), new HashSet<>(film.getGenres()));
-                newFilm.setGenres(filmGenreDao.readGenresByFilmId(film.getId()));
+                newFilm.setGenres(filmGenreDao.setGenresFilm(newFilm.getId(), new HashSet<>(film.getGenres())));
             }
             return newFilm;
         }
-    }
-
-    void addFilmGenre(long filmId, Set<Genre> genres) {
-        genres.forEach((genre) -> filmGenreDao.create(filmId, genre.getId()));
     }
 
     //Обновление фильма
@@ -102,8 +89,7 @@ public class FilmServiceImpl implements FilmService {
             updateFilm.setMpa(mpaDao.getMpaById(film.getMpa().getId()));
             if (film.getGenres() != null) {
                 filmGenreDao.delete(film.getId());
-                addFilmGenre(updateFilm.getId(), new HashSet<>(film.getGenres()));
-                updateFilm.setGenres(filmGenreDao.readGenresByFilmId(film.getId()));
+                updateFilm.setGenres(filmGenreDao.setGenresFilm(updateFilm.getId(), new HashSet<>(film.getGenres())));
             }
             return updateFilm;
         } else {
@@ -127,8 +113,6 @@ public class FilmServiceImpl implements FilmService {
     public Film getFilmById(long id) {
         if (filmStorage.getFilmById(id) != null) {
             Film getFilm = filmStorage.getFilmById(id);
-            getFilm.setMpa(mpaDao.getMpaByFilmId(getFilm.getId()));
-            getFilm.setGenres(filmGenreDao.readGenresByFilmId(id));
             return getFilm;
         } else {
             throw new FilmNotFoundException("Фильма с указанным id не существует");
