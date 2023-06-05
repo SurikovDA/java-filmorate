@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.service.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.FriendshipDao;
+import ru.yandex.practicum.filmorate.storage.FriendshipStorage;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -19,10 +19,10 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
 
     private final UserStorage userStorage;
-    private final FriendshipDao friendshipDao;
+    private final FriendshipStorage friendshipDao;
 
     @Autowired
-    public UserServiceImpl(UserStorage userStorage, FriendshipDao friendshipDao) {
+    public UserServiceImpl(UserStorage userStorage, FriendshipStorage friendshipDao) {
         this.userStorage = userStorage;
         this.friendshipDao = friendshipDao;
     }

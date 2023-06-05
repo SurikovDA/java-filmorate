@@ -85,7 +85,6 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     //Получение списка пользователей по списку id
-    @Override
     public Collection<User> getUsersById(Set<Long> idCommonFriends) {
         List<User> result = new ArrayList<>();
         for (long id : idCommonFriends) {

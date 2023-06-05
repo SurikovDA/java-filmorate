@@ -3,10 +3,10 @@ package ru.yandex.practicum.filmorate.service.film;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.FilmGenreDao;
-import ru.yandex.practicum.filmorate.dao.GenreDao;
-import ru.yandex.practicum.filmorate.dao.LikesDao;
-import ru.yandex.practicum.filmorate.dao.MpaDao;
+import ru.yandex.practicum.filmorate.storage.FilmGenreStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.LikesStorage;
+import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -24,15 +24,15 @@ import java.util.Set;
 public class FilmServiceImpl implements FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
-    private final MpaDao mpaDao;
-    private final LikesDao likesDao;
-    private final GenreDao genreDao;
+    private final MpaStorage mpaDao;
+    private final LikesStorage likesDao;
+    private final GenreStorage genreDao;
 
-    private final FilmGenreDao filmGenreDao;
+    private final FilmGenreStorage filmGenreDao;
 
     @Autowired
     public FilmServiceImpl(FilmStorage filmStorage, UserStorage userStorage,
-                           MpaDao mpaDao, LikesDao likesDao, GenreDao genreDao, FilmGenreDao filmGenreDao) {
+                           MpaStorage mpaDao, LikesStorage likesDao, GenreStorage genreDao, FilmGenreStorage filmGenreDao) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.mpaDao = mpaDao;
