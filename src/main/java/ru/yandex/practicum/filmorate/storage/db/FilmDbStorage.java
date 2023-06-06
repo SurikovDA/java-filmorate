@@ -103,9 +103,9 @@ public class FilmDbStorage implements FilmStorage {
                 .mpa(new Mpa(resultSet.getInt("MPA_ID"),
                         resultSet.getString("MPA_NAME"),
                         resultSet.getString("MPA_DESCRIPTION")))
-                .likes(likesDao.readLikesByFilmId(resultSet.getLong("ID")).stream()
+                .likes(new HashSet<>(likesDao.readLikesByFilmId(resultSet.getLong("ID")).stream()
                         .map(User::getId)
-                        .collect(Collectors.toList()))
+                        .collect(Collectors.toList())))
                 .genres(filmGenreDao.readGenresByFilmId(resultSet.getLong("ID")))
                 .build();
     }

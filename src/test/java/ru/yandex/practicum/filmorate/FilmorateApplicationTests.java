@@ -56,7 +56,7 @@ class FilmorateApplicationTests {
             LocalDate.of(2223, 4, 25), friends);
 
     //Создание фильмов
-    List<Long> likes = new ArrayList<>();
+    Set<Long> likes = new HashSet<>();
     List<Genre> genres = new ArrayList<>();
     Mpa mpa = new Mpa(1, "G");
     Film film = new Film(0, "pirates", "adventures",
