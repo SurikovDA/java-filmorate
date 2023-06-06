@@ -8,6 +8,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmGenreStorage;
 import ru.yandex.practicum.filmorate.storage.LikesStorage;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
@@ -60,8 +62,10 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getFilms() {
-        String sql = "SELECT * " +
-                "FROM FILMS ";
+        String sql = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, M.MPA_ID," +
+                " M.NAME AS MPA_NAME, M.DESCRIPTION  AS MPA_DESCRIPTION\n" +
+                "FROM FILMS AS F\n" +
+                "JOIN MPA AS M ON F.MPA_ID = M.MPA_ID;";
         return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToFilm(rs)).stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -79,10 +83,11 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getFilmById(long id) {
-        String sql = "SELECT * " +
-                "FROM FILMS AS F " +
-                "JOIN MPA AS M ON F.MPA_ID = M.MPA_ID " +
-                "WHERE F.ID = ? ";
+        String sql = "SELECT F.ID, F.NAME, F.DESCRIPTION, F.RELEASE_DATE, F.DURATION, M.MPA_ID," +
+                " M.NAME AS MPA_NAME, M.DESCRIPTION  AS MPA_DESCRIPTION \n" +
+                "FROM FILMS AS F\n" +
+                "JOIN MPA AS M ON F.MPA_ID = M.MPA_ID\n" +
+                "WHERE F.ID = ?;";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToFilm(rs), id).stream()
                 .findAny().orElse(null);
@@ -95,10 +100,13 @@ public class FilmDbStorage implements FilmStorage {
                 .description(resultSet.getString("DESCRIPTION"))
                 .releaseDate(resultSet.getDate("RELEASE_DATE").toLocalDate())
                 .duration(resultSet.getInt("DURATION"))
-                .mpa(mpaDao.getMpaById(resultSet.getInt("MPA_ID")))
-                .likes(new HashSet<>())
+                .mpa(new Mpa(resultSet.getInt("MPA_ID"),
+                        resultSet.getString("MPA_NAME"),
+                        resultSet.getString("MPA_DESCRIPTION")))
+                .likes(likesDao.readLikesByFilmId(resultSet.getLong("ID")).stream()
+                        .map(User::getId)
+                        .collect(Collectors.toList()))
                 .genres(filmGenreDao.readGenresByFilmId(resultSet.getLong("ID")))
                 .build();
     }
-
 }

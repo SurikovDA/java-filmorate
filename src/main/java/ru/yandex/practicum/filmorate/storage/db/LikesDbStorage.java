@@ -12,7 +12,6 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -76,7 +75,9 @@ public class LikesDbStorage implements LikesStorage {
                 .releaseDate(resultSet.getDate("RELEASE_DATE").toLocalDate())
                 .duration(resultSet.getInt("DURATION"))
                 .mpa(mpaDao.getMpaById(resultSet.getInt("MPA_ID")))
-                .likes(new HashSet<>())
+                .likes(readLikesByFilmId(resultSet.getLong("ID")).stream()
+                        .map(User::getId)
+                        .collect(Collectors.toList()))
                 .rating(resultSet.getInt("rating"))
                 .genres(filmGenreDao.readGenresByFilmId(resultSet.getLong("ID")))
                 .build();

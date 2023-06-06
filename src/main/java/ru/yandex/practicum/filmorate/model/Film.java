@@ -10,9 +10,8 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 @Data
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма не может быть отрицательной!")
     private Integer duration;
-    Set<Long> likes = new HashSet<>();
+    List<Long> likes = new ArrayList<>();
     int rating = 0;
     List<Genre> genres = new ArrayList<>();
     Mpa mpa = new Mpa();
