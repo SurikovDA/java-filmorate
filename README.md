@@ -1,4 +1,7 @@
 # java-filmorate
+
+![](images/filmorate.png)
+
 # Описание проекта
 В данном проекте реализовано приложение Filmorate на Spring Boot.
 
