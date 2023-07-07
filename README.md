@@ -1,5 +1,3 @@
-# java-filmorate
-
 ![](images/filmorate.png)
 
 # Описание проекта
